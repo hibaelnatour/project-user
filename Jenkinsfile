@@ -1,8 +1,5 @@
 #!/usr/bin/env groovy
 
-import java.util.Date
-
-
 String gitEmail = "hibaelnatour@gmail.com"
 String gitUser = "hibaelnatour"
 String gitRepoUser_URL = "https://github.com/hibaelnatour/project-user.git"
@@ -16,6 +13,11 @@ def start = new Date()
 def err = null
 def response
 
+def toJson = {
+	input ->
+	groovy.json.JsonOutput.toJson(input)
+}
+
 currentBuild.result = "SUCCESS"
 
 try {
@@ -24,16 +26,11 @@ try {
 
 		workspace = pwd()
 
-		// clean up previous build
-		stage (name : 'Cleanup') {
-			//sh "rm -rf ${workspace}/env" à VOIR
-		}
-
 		//Checkout Git repo project-user 
 		stage(name: 'Checkout'){
 			sh 'git config user.email ${gitEmail}'
 			sh 'git config user.name ${gitUser}'
-			git url: ${gitRepoUser_URL}, branch: 'master'
+			git url: gitRepoUser_URL, branch: 'master'
 		}
 
 		//Get userConfFilename in jenkins workspace after git checkout
@@ -49,11 +46,8 @@ try {
 			
 			echo toJson(data)
 			
-			response = httpRequest consoleLogResponseBody: true, contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: toJson(data), url: ${apiTransfoEndpoint}, validResponseCodes: '200'
+			response = httpRequest consoleLogResponseBody: true, contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: toJson(data), url: apiTransfoEndpoint, validResponseCodes: '200'
 			
-
-			//echo "..................."
-			//sh "value=`cat test-conf.json`"
 		}
 		
 		dir('ProjAdminCheckout') {
@@ -61,7 +55,7 @@ try {
 			steps{
 				sh 'git config user.email ${gitEmail}'
 				sh 'git config user.name ${gitUser}'
-				git url: ${gitRepoAdmin_URL}, branch: 'master'
+				git url: gitRepoAdmin_URL, branch: 'master'
 			}
 			
 			//Get finalConfFilename in jenkins workspace after git checkout
@@ -91,27 +85,7 @@ try {
     err = caughtError
     currentBuild.result = "FAILURE"
 
-} finally {
-
-    timeSpent = "\nTime spent: ${timeDiff(start)}"
-
-    if (err) {
-        throw err
-    } else {
-		currentBuild.result = "SUCCESS"
-    }
 }
 
-def timeDiff(st) {
-    def delta = (new Date()).getTime() - st.getTime()
-    def seconds = delta.intdiv(1000) % 60
-    def minutes = delta.intdiv(60 * 1000) % 60
 
-    return "${minutes} min ${seconds} sec"
-}
 
-@NonCPS
-def toJson = {
-	input ->
-	groovy.json.JsonOutput.toJson(input)
-}
