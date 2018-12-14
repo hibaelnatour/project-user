@@ -81,7 +81,7 @@ try {
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
-				sh 'git tag -a finalConf_v1 -m "Jenkins tag"'
+				sh 'git tag -a finalConf_v2 -m "Jenkins tag"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --tags'
 			}
 		}
