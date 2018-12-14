@@ -28,8 +28,10 @@ try {
 
 		//Checkout Git repo project-user 
 		stage(name: 'Checkout'){
-			sh 'git config user.email ${gitEmail}'
-			sh 'git config user.name ${gitUser}'
+			sh 'git config --global user.email ${gitEmail}'
+			sh 'git config --global user.name ${gitUser}'
+			sh 'git config --global push.default matching'
+			sh 'git config --global push.default simple'
 			git url: gitRepoUser_URL, branch: 'master'
 		}
 
@@ -70,8 +72,7 @@ try {
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
-				def tagname = "finalConf_"+currentBuild.getStartTimeInMillis()
-				sh 'git tag -a ${tagname} -m "Jenkins tag"'
+				sh 'git tag -a finalConf_v1 -m "Jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --tags'
 			}
 		}
