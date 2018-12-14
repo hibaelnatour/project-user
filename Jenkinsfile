@@ -56,6 +56,7 @@ try {
 			stage(name: "Chekout"){
 				sh 'git config user.email ${gitEmail}'
 				sh 'git config user.name ${gitUser}'
+				sh 'git config --global push.followTags true'
 				git url: gitRepoAdmin_URL, branch: 'master'
 			}
 			
@@ -70,10 +71,8 @@ try {
 			stage(name: "push"){
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
-				sh 'git push --set-upstream https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git master'
-				//sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
 				sh 'git tag -a finalConf_v2 -m "Jenkins"'
-				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --tags'
+				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --follow-tags'
 			}
 		}
 	}
