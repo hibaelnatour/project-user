@@ -30,7 +30,6 @@ try {
 		stage(name: 'Checkout'){
 			sh 'git config --global user.email ${gitEmail}'
 			sh 'git config --global user.name ${gitUser}'
-			sh 'git config --global push.default matching'
 			sh 'git config --global push.default simple'
 			git url: gitRepoUser_URL, branch: 'master'
 		}
