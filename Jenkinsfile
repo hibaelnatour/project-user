@@ -1,24 +1,28 @@
 #!/usr/bin/env groovy
 
+//import java.util.Date
+
+
 String gitEmail = "hibaelnatour@gmail.com"
 String gitUser = "hibaelnatour"
 String gitRepoUser_URL = "https://github.com/hibaelnatour/project-user.git"
 String gitRepoAdmin_URL = "https://github.com/hibaelnatour/project-admin.git" 
+
 String apiTransfoEndpoint = "http://api-transformation-myaccess-reg-jenk-poc.apps.na39.openshift.opentlc.com/api/v1/transfo"
 String workspace
 String userConfFilename
 String finalConfFilename
 
-def start = new Date()
+//def start = new Date()
 def err = null
 def response
+
+currentBuild.result = "SUCCESS"
 
 def toJson = {
 	input ->
 	groovy.json.JsonOutput.toJson(input)
 }
-
-currentBuild.result = "SUCCESS"
 
 try {
 
@@ -48,18 +52,21 @@ try {
 			
 			response = httpRequest consoleLogResponseBody: true, contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: toJson(data), url: apiTransfoEndpoint, validResponseCodes: '200'
 			
+
+			//echo "..................."
+			//sh "value=`cat test-conf.json`"
 		}
 		
 		dir('ProjAdminCheckout') {
 			//Checkout repo
-			steps{
+			stage(name: "Chekout 2"){
 				sh 'git config user.email ${gitEmail}'
 				sh 'git config user.name ${gitUser}'
 				git url: gitRepoAdmin_URL, branch: 'master'
 			}
 			
 			//Get finalConfFilename in jenkins workspace after git checkout
-			steps{
+			stage(name: "findfile"){
 				def files = findFiles(glob: 'final.json') 
 				echo "${files[0].name}"    	
 				finalConfFilename = "${files[0].name}"
@@ -70,7 +77,7 @@ try {
 				//}
 			}
 			
-			steps{
+			stage(name: "push"){
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
@@ -85,7 +92,23 @@ try {
     err = caughtError
     currentBuild.result = "FAILURE"
 
-}
+} /*finally {
 
+    timeSpent = "\nTime spent: ${timeDiff(start)}"
+
+    if (err) {
+        throw err
+    } else {
+		currentBuild.result = "SUCCESS"
+    }
+}*/
+
+/*def timeDiff(st) {
+    def delta = (new Date()).getTime() - st.getTime()
+    def seconds = delta.intdiv(1000) % 60
+    def minutes = delta.intdiv(60 * 1000) % 60
+
+    return "${minutes} min ${seconds} sec"
+}*/
 
 
