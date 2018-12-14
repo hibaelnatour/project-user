@@ -71,7 +71,7 @@ try {
 			stage(name: "push"){
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
-				sh 'git tag -a finalConf_v1 -m "Jenkins"'
+				sh 'git tag -a finalConf_v7 -m "Jenkins"'
 				sh 'git push --set-upstream https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --follow-tags master'
 			}
 		}
