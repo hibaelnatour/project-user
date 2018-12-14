@@ -63,11 +63,7 @@ try {
 				def files = findFiles(glob: 'final.json') 
 				echo "${files[0].name}"    	
 				finalConfFilename = "${files[0].name}"
-				//if (response.status == 200) {
-					writeFile file: finalConfFilename, text: response.content
-				//} else {
-					//currentBuild.result = "FAILURE"
-				//}
+				writeFile file: finalConfFilename, text: response.content
 			}
 			
 			stage(name: "push"){
