@@ -72,7 +72,7 @@ try {
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git tag -a finalConf_v0 -m "Jenkins"'
-				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --follow-tags'
+				sh 'git push --set-upstream https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --follow-tags master'
 			}
 		}
 	}
