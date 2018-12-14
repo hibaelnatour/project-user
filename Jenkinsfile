@@ -1,8 +1,5 @@
 #!/usr/bin/env groovy
 
-//import java.util.Date
-
-
 String gitEmail = "hibaelnatour@gmail.com"
 String gitUser = "hibaelnatour"
 String gitRepoUser_URL = "https://github.com/hibaelnatour/project-user.git"
@@ -13,7 +10,6 @@ String workspace
 String userConfFilename
 String finalConfFilename
 
-//def start = new Date()
 def err = null
 def response
 
@@ -52,21 +48,18 @@ try {
 			
 			response = httpRequest consoleLogResponseBody: true, contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: toJson(data), url: apiTransfoEndpoint, validResponseCodes: '200'
 			
-
-			//echo "..................."
-			//sh "value=`cat test-conf.json`"
 		}
 		
 		dir('ProjAdminCheckout') {
 			//Checkout repo
-			stage(name: "Chekout 2"){
+			stage(name: "Chekout"){
 				sh 'git config user.email ${gitEmail}'
 				sh 'git config user.name ${gitUser}'
 				git url: gitRepoAdmin_URL, branch: 'master'
 			}
 			
 			//Get finalConfFilename in jenkins workspace after git checkout
-			stage(name: "findfile"){
+			stage(name: "Get file"){
 				def files = findFiles(glob: 'final.json') 
 				echo "${files[0].name}"    	
 				finalConfFilename = "${files[0].name}"
@@ -81,7 +74,8 @@ try {
 				sh 'git add .'
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
-				sh 'git tag -a finalConf_v2 -m "Jenkins tag"'
+				def tagname = "finalConf_"+currentBuild.getStartTimeInMillis()
+				sh 'git tag -a tagname -m "Jenkins tag"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --tags'
 			}
 		}
@@ -92,23 +86,6 @@ try {
     err = caughtError
     currentBuild.result = "FAILURE"
 
-} /*finally {
-
-    timeSpent = "\nTime spent: ${timeDiff(start)}"
-
-    if (err) {
-        throw err
-    } else {
-		currentBuild.result = "SUCCESS"
-    }
-}*/
-
-/*def timeDiff(st) {
-    def delta = (new Date()).getTime() - st.getTime()
-    def seconds = delta.intdiv(1000) % 60
-    def minutes = delta.intdiv(60 * 1000) % 60
-
-    return "${minutes} min ${seconds} sec"
-}*/
+}
 
 
