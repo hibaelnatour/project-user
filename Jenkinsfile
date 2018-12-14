@@ -75,7 +75,7 @@ try {
 				sh 'git commit -m "test commit jenkins"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git'
 				def tagname = "finalConf_"+currentBuild.getStartTimeInMillis()
-				sh 'git tag -a tagname -m "Jenkins tag"'
+				sh 'git tag -a ${tagname} -m "Jenkins tag"'
 				sh 'git push https://hibaelnatour:Hemo2013@github.com/hibaelnatour/project-admin.git --tags'
 			}
 		}
